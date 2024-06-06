@@ -11,11 +11,15 @@ const PORT = 8002;
 connectToMongoDB("mongodb://localhost:27017/short-url")
 .then(() => console.log(" MongoDB Connected "));
 
+<<<<<<< HEAD
 app.set("view engine", "ejs");
 app.set('views', path.resolve("./views"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
+=======
+app.use(express.json())
+>>>>>>> b3a219197f0042bd73e8ce9446e89b2da4e9245d
 
 app.use("/url", urlRoute);
 app.use("/", staticRoute);
