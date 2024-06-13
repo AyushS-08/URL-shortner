@@ -22,11 +22,8 @@ app.set('views', path.resolve("./views"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
-<<<<<<< HEAD
 app.use(cookieParser());
-=======
-app.use(express.json())
->>>>>>> 2f64d6edffc2dab8fff5bdbd42b41b5cd22653e4
+app.use(express.json());
 
 app.use("/url", restrictToLoggedinUserOnly, urlRoute);
 app.use("/user", userRoute);
