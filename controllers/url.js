@@ -16,16 +16,16 @@ async function handleGenerateNewShortURL(req, res) {
             shortId: shortID,
             redirectURL: body.url,
             visitHistory: [],
+            createdBy: req.user._id,
         });
 
         console.log('New URL created:', newUrl);
-<<<<<<< HEAD
+
         return res.render('home', {
             id: shortID,
         });
-=======
+
         return res.json({ id: shortID });
->>>>>>> b3a219197f0042bd73e8ce9446e89b2da4e9245d
     } catch (error) {
         console.error('Error creating new short URL:', error);
         return res.status(500).json({ error: 'Internal Server Error' });

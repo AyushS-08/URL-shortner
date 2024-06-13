@@ -1,9 +1,15 @@
 const express = require('express');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const { connectToMongoDB } = require("./Connect");
+const { restrictToLoggedinUserOnly, checkAuth } = require('./middlewares/auth');
+
+const URL = require('./models/url');
+
 const urlRoute = require('./routes/url');
 const staticRoute = require('./routes/staticRouter');
-const URL = require('./models/url');
+const userRoute = require("./routes/user");
+
 const { Timestamp } = require('mongodb');
 const app = express();
 const PORT = 8002;
@@ -11,18 +17,16 @@ const PORT = 8002;
 connectToMongoDB("mongodb://localhost:27017/short-url")
 .then(() => console.log(" MongoDB Connected "));
 
-<<<<<<< HEAD
 app.set("view engine", "ejs");
 app.set('views', path.resolve("./views"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
-=======
-app.use(express.json())
->>>>>>> b3a219197f0042bd73e8ce9446e89b2da4e9245d
+app.use(cookieParser());
 
-app.use("/url", urlRoute);
-app.use("/", staticRoute);
+app.use("/url", restrictToLoggedinUserOnly, urlRoute);
+app.use("/user", userRoute);
+app.use("/", checkAuth, staticRoute);
 
 app.get('/url/:shortId', async (req, res) => {
     const shortId = req.params.shortId;
@@ -31,7 +35,11 @@ app.get('/url/:shortId', async (req, res) => {
     }, { $push: {
         visitHistory: { timestamp: Date.now()},
     },});
-    res.redirect(entry.redirectURL);
-})
+    if (entry !== null && entry !== undefined) {
+        res.redirect(entry.redirectURL);
+    } else {
+        console.error("Entry is null or undefined.");
+    }
+    })
 
 app.listen(PORT, () => console.log(`Server Started at PORT ${ PORT }`));
